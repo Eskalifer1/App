@@ -1581,6 +1581,9 @@ type WorkspaceConfirmationNavigatorParamList = {
     [SCREENS.WORKSPACE_CONFIRMATION.ROOT]: {
         backTo?: Routes;
     };
+    [SCREENS.WORKSPACE_CONFIRMATION.CURRENCY]: {
+        currency: string;
+    };
 };
 
 type WorkspaceDuplicateNavigatorParamList = {

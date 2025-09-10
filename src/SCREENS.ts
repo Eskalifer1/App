@@ -199,6 +199,7 @@ const SCREENS = {
         REPORT_DETAILS: 'Report_Details',
         REPORT_CHANGE_WORKSPACE: 'ReportChangeWorkspace',
         WORKSPACE_CONFIRMATION: 'Workspace_Confirmation',
+        WORKSPACE_CONFIRMATION_CURRENCY: 'Workspace_Confirmation_Currency',
         WORKSPACE_DUPLICATE: 'Workspace_Duplicate',
         REPORT_SETTINGS: 'Report_Settings',
         REPORT_DESCRIPTION: 'Report_Description',
@@ -395,7 +396,7 @@ const SCREENS = {
         ROOT: 'ReportChangeWorkspace_Root',
     },
 
-    WORKSPACE_CONFIRMATION: {ROOT: 'Workspace_Confirmation_Root'},
+    WORKSPACE_CONFIRMATION: {ROOT: 'Workspace_Confirmation_Root', CURRENCY: 'Workspace_Confirmation_Currency'},
     WORKSPACE_DUPLICATE: {ROOT: 'Workspace_Duplicate_Root', SELECT_FEATURES: 'Workspace_Duplicate_Select_Features'},
 
     WORKSPACES_LIST: 'Workspaces_List',

@@ -2465,6 +2465,10 @@ const ROUTES = {
         // eslint-disable-next-line no-restricted-syntax -- Legacy route generation
         getRoute: (backTo?: string) => getUrlWithBackToParam(`workspace/confirmation`, backTo),
     },
+    WORKSPACE_CONFIRMATION_CURRENCY: {
+        route: 'workspace/confirmation/currency',
+        getRoute: (currency: string) => `workspace/confirmation/currency?currency=${currency}` as const,
+    },
     MIGRATED_USER_WELCOME_MODAL: {
         route: 'onboarding/migrated-user-welcome',
 

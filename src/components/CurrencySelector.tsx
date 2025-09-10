@@ -1,13 +1,15 @@
-import {useIsFocused} from '@react-navigation/native';
+import {useIsFocused, useRoute} from '@react-navigation/native';
 import React, {forwardRef, useEffect, useRef} from 'react';
 import type {ForwardedRef} from 'react';
 import type {View} from 'react-native';
 import type {ValueOf} from 'type-fest';
+import useCurrencyFromRoute from '@hooks/useCurrencyFormRoute';
 import useLocalize from '@hooks/useLocalize';
 import useThemeStyles from '@hooks/useThemeStyles';
 import Navigation from '@libs/Navigation/Navigation';
 import CONST from '@src/CONST';
-import ROUTES from '@src/ROUTES';
+import ROUTES, {getUrlWithBackToParam, Route} from '@src/ROUTES';
+import {Routes} from '@src/types/onyx/Transaction';
 import MenuItemWithTopDescription from './MenuItemWithTopDescription';
 
 type CurrencySelectorProps = {
@@ -28,33 +30,62 @@ type CurrencySelectorProps = {
     onBlur?: () => void;
 
     /** object to get route details from */
-    currencySelectorRoute?: typeof ROUTES.SETTINGS_SUBSCRIPTION_CHANGE_PAYMENT_CURRENCY | typeof ROUTES.SETTINGS_CHANGE_CURRENCY;
+    currencySelectorRoute?: Route;
+
+    shouldHandleStateWithUrl?: boolean;
 };
 
 function CurrencySelector(
-    {errorText = '', value: currency, onInputChange = () => {}, onBlur, currencySelectorRoute = ROUTES.SETTINGS_CHANGE_CURRENCY}: CurrencySelectorProps,
+    {errorText = '', value: currency, onInputChange = () => {}, onBlur, currencySelectorRoute = ROUTES.SETTINGS_CHANGE_CURRENCY, shouldHandleStateWithUrl = false}: CurrencySelectorProps,
     ref: ForwardedRef<View>,
 ) {
     const styles = useThemeStyles();
     const {translate} = useLocalize();
+    const {currency: currencyFromUrl} = useCurrencyFromRoute();
 
     const currencyTitleDescStyle = currency ? styles.textNormal : null;
 
     const didOpenCurrencySelector = useRef(false);
     const isFocused = useIsFocused();
-    useEffect(() => {
-        if (!isFocused || !didOpenCurrencySelector.current) {
-            return;
-        }
-        didOpenCurrencySelector.current = false;
-        onBlur?.();
-    }, [isFocused, onBlur]);
 
     useEffect(() => {
+        if (!shouldHandleStateWithUrl) {
+            // Logic without url
+            if (!isFocused || !didOpenCurrencySelector.current) {
+                return;
+            }
+            didOpenCurrencySelector.current = false;
+            onBlur?.();
+        } else {
+            // Logic with url
+            if (isFocused && didOpenCurrencySelector.current) {
+                didOpenCurrencySelector.current = false;
+                if (!currencyFromUrl) {
+                    onBlur?.();
+                }
+            }
+
+            if (!currencyFromUrl) {
+                return;
+            }
+
+            if (onInputChange) {
+                onInputChange(currencyFromUrl);
+            }
+
+            Navigation.setParams({currency: undefined});
+        }
+    }, [isFocused, onBlur, currencyFromUrl, shouldHandleStateWithUrl]);
+
+    // We need this useEffect when we dont handle currency state with url
+    useEffect(() => {
+        if (shouldHandleStateWithUrl) {
+            return;
+        }
         // This will cause the form to revalidate and remove any error related to currency
         onInputChange(currency);
         // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
-    }, [currency]);
+    }, [currency, shouldHandleStateWithUrl]);
 
     return (
         <MenuItemWithTopDescription

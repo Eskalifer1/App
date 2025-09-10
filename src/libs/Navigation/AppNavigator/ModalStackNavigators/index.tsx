@@ -195,6 +195,7 @@ const ReportSettingsModalStackNavigator = createModalStackNavigator<ReportSettin
 
 const WorkspaceConfirmationModalStackNavigator = createModalStackNavigator<WorkspaceConfirmationNavigatorParamList>({
     [SCREENS.WORKSPACE_CONFIRMATION.ROOT]: () => require<ReactComponentModule>('../../../../pages/workspace/WorkspaceConfirmationPage').default,
+    [SCREENS.WORKSPACE_CONFIRMATION.CURRENCY]: () => require<ReactComponentModule>('../../../../pages/workspace/WorkspaceConfirmationCurrencyPage').default,
 });
 
 const WorkspaceDuplicateModalStackNavigator = createModalStackNavigator<WorkspaceDuplicateNavigatorParamList>({

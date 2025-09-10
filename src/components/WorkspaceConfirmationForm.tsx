@@ -1,5 +1,6 @@
 import React, {useCallback, useMemo, useState} from 'react';
 import {View} from 'react-native';
+import {ValueOf} from 'type-fest';
 import useAutoFocusInput from '@hooks/useAutoFocusInput';
 import useLocalize from '@hooks/useLocalize';
 import useOnyx from '@hooks/useOnyx';
@@ -14,13 +15,16 @@ import {getDefaultWorkspaceAvatar} from '@libs/ReportUtils';
 import {isRequiredFulfilled} from '@libs/ValidationUtils';
 import CONST from '@src/CONST';
 import ONYXKEYS from '@src/ONYXKEYS';
+import ROUTES from '@src/ROUTES';
 import INPUT_IDS from '@src/types/form/WorkspaceConfirmationForm';
 import isLoadingOnyxValue from '@src/types/utils/isLoadingOnyxValue';
 import AvatarWithImagePicker from './AvatarWithImagePicker';
 import CurrencyPicker from './CurrencyPicker';
+import CurrencySelector from './CurrencySelector';
 import FormProvider from './Form/FormProvider';
 import InputWrapper from './Form/InputWrapper';
 import type {FormInputErrors, FormOnyxValues} from './Form/types';
+import FullscreenLoadingIndicator from './FullscreenLoadingIndicator';
 import HeaderWithBackButton from './HeaderWithBackButton';
 import * as Expensicons from './Icon/Expensicons';
 import ScrollView from './ScrollView';
@@ -78,12 +82,18 @@ function WorkspaceConfirmationForm({onSubmit, policyOwnerEmail = '', onBackButto
     const policyID = useMemo(() => generatePolicyID(), []);
     const [session, metadata] = useOnyx(ONYXKEYS.SESSION, {canBeMissing: false});
 
-    const [allPersonalDetails] = useOnyx(ONYXKEYS.PERSONAL_DETAILS_LIST, {canBeMissing: false});
+    const [allPersonalDetails, allPersonalDetailsMetadata] = useOnyx(ONYXKEYS.PERSONAL_DETAILS_LIST, {canBeMissing: false});
+    const [isAppLoading = true] = useOnyx(ONYXKEYS.IS_LOADING_APP, {canBeMissing: false});
 
     const defaultWorkspaceName = generateDefaultWorkspaceName(policyOwnerEmail || session?.email);
     const [workspaceNameFirstCharacter, setWorkspaceNameFirstCharacter] = useState(defaultWorkspaceName ?? '');
 
-    const userCurrency = allPersonalDetails?.[session?.accountID ?? CONST.DEFAULT_NUMBER_ID]?.localCurrencyCode ?? CONST.CURRENCY.USD;
+    const userDefaultCurrency = (allPersonalDetails?.[session?.accountID ?? CONST.DEFAULT_NUMBER_ID]?.localCurrencyCode ?? CONST.CURRENCY.USD) as ValueOf<typeof CONST.CURRENCY>;
+    const [currency, setCurrency] = useState(userDefaultCurrency);
+
+    const handleCurrencyChange = useCallback((value: unknown, key: unknown) => {
+        setCurrency(value as ValueOf<typeof CONST.CURRENCY>);
+    }, []);
 
     const [workspaceAvatar, setWorkspaceAvatar] = useState<{avatarUri: string | null; avatarFileName?: string | null; avatarFileType?: string | null}>({
         avatarUri: null,
@@ -176,10 +186,12 @@ function WorkspaceConfirmationForm({onSubmit, policyOwnerEmail = '', onBackButto
 
                         <View style={[styles.mhn5, styles.mt4]}>
                             <InputWrapper
-                                InputComponent={CurrencyPicker}
+                                currencySelectorRoute={ROUTES.WORKSPACE_CONFIRMATION_CURRENCY.getRoute(currency)}
+                                value={currency}
+                                InputComponent={CurrencySelector}
                                 inputID={INPUT_IDS.CURRENCY}
-                                label={translate('workspace.editor.currencyInputLabel')}
-                                defaultValue={userCurrency}
+                                onValueChange={handleCurrencyChange}
+                                shouldHandleStateWithUrl
                             />
                         </View>
                     </View>
