@@ -8,6 +8,7 @@ import type {GestureResponderEvent} from 'react-native';
 import {View} from 'react-native';
 import {runOnJS, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
 import AttachmentOfflineIndicator from '@components/AttachmentOfflineIndicator';
+import {useCarouselArrowsContext} from '@components/Attachments/AttachmentCarousel/CarouselArrowsContext';
 import FullScreenLoadingIndicator from '@components/FullscreenLoadingIndicator';
 import Hoverable from '@components/Hoverable';
 import PressableWithoutFeedback from '@components/Pressable/PressableWithoutFeedback';
@@ -106,6 +107,18 @@ function BaseVideoPlayer({
     const {source} = videoPopoverMenuPlayerRef.current?.props ?? {};
     const shouldUseNewRate = typeof source === 'number' || !source || source.uri !== sourceURL;
 
+    const carouselArrows = useCarouselArrowsContext();
+
+    const {setShouldShowArrows} = useMemo(() => {
+        if (carouselArrows === null) {
+            return {setShouldShowArrows: () => {}};
+        }
+
+        return {
+            ...carouselArrows,
+        };
+    }, [carouselArrows]);
+
     const togglePlayCurrentVideo = useCallback(() => {
         setIsEnded(false);
         videoResumeTryNumberRef.current = 0;
@@ -113,10 +126,12 @@ function BaseVideoPlayer({
             updateCurrentURLAndReportID(url, reportID);
         } else if (isPlaying) {
             pauseVideo();
+            setShouldShowArrows?.(true);
         } else {
             playVideo();
+            setShouldShowArrows?.(false);
         }
-    }, [isCurrentlyURLSet, isPlaying, pauseVideo, playVideo, reportID, updateCurrentURLAndReportID, url, videoResumeTryNumberRef]);
+    }, [isCurrentlyURLSet, isPlaying, pauseVideo, playVideo, reportID, updateCurrentURLAndReportID, url, videoResumeTryNumberRef, setShouldShowArrows]);
 
     const hideControl = useCallback(() => {
         if (isEnded) {

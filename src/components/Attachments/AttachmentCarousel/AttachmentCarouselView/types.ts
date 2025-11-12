@@ -18,6 +18,10 @@ type AttachmentCarouselViewProps = {
     setShouldShowArrows: (show?: React.SetStateAction<boolean>) => void;
     /** Callback for cancelling auto hiding of carousel button arrows */
     cancelAutoHideArrow: () => void;
+
+    pauseAutoHideArrows: () => void;
+
+    resumeAutoHideArrows: () => void;
     /** A callback that is called when swipe-down-to-close gesture happens */
     onSwipeDown?: () => void;
     /** Sets current page */

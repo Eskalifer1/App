@@ -35,7 +35,7 @@ function AttachmentCarousel({
 
     const [page, setPage] = useState<number>();
     const [attachments, setAttachments] = useState<Attachment[]>([]);
-    const {shouldShowArrows, setShouldShowArrows, autoHideArrows, cancelAutoHideArrows} = useCarouselArrows();
+    const {shouldShowArrows, setShouldShowArrows, autoHideArrows, cancelAutoHideArrows, pauseAutoHideArrows, resumeAutoHideArrows} = useCarouselArrows();
 
     useEffect(() => {
         if (!canUseTouchScreen) {
@@ -122,6 +122,8 @@ function AttachmentCarousel({
             attachmentID={attachmentID}
             source={source}
             onNavigate={onNavigate}
+            pauseAutoHideArrows={pauseAutoHideArrows}
+            resumeAutoHideArrows={resumeAutoHideArrows}
         />
     );
 }

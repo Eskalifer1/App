@@ -35,7 +35,7 @@ type ReceiptViewProps = {
 function ReceiptView({route}: ReceiptViewProps) {
     const {translate} = useLocalize();
     const {setAttachmentError} = useAttachmentErrors();
-    const {shouldShowArrows, setShouldShowArrows, autoHideArrows, cancelAutoHideArrows} = useCarouselArrows();
+    const {shouldShowArrows, setShouldShowArrows, autoHideArrows, cancelAutoHideArrows, resumeAutoHideArrows, pauseAutoHideArrows} = useCarouselArrows();
     const styles = useThemeStyles();
     const [currentReceipt, setCurrentReceipt] = useState<ReceiptWithTransactionIDAndSource | null>();
     const [page, setPage] = useState<number>(-1);
@@ -125,6 +125,8 @@ function ReceiptView({route}: ReceiptViewProps) {
                 setShouldShowArrows={setShouldShowArrows}
                 onAttachmentError={setAttachmentError}
                 shouldShowArrows={shouldShowArrows}
+                resumeAutoHideArrows={resumeAutoHideArrows}
+                pauseAutoHideArrows={pauseAutoHideArrows}
             />
             <ConfirmModal
                 title={translate('receipt.deleteReceipt')}

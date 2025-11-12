@@ -26,6 +26,8 @@ function AttachmentCarouselView({
     onSwipeDown,
     setPage,
     attachmentID,
+    resumeAutoHideArrows,
+    pauseAutoHideArrows,
 }: AttachmentCarouselViewProps) {
     const {translate} = useLocalize();
     const canUseTouchScreen = canUseTouchScreenUtil();
@@ -106,6 +108,8 @@ function AttachmentCarouselView({
                         onSwipeDown={onSwipeDown}
                         ref={pagerRef}
                         reportID={report?.reportID}
+                        resumeAutoHideArrows={resumeAutoHideArrows}
+                        pauseAutoHideArrows={pauseAutoHideArrows}
                     />
                 </>
             )}

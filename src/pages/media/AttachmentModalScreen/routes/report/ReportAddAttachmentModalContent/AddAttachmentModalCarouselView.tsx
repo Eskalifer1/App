@@ -19,7 +19,7 @@ const convertFileToAttachment = (file: FileObject | undefined): Attachment => {
 
 function AddAttachmentModalCarouselView({fileToDisplay, files}: AttachmentContentProps) {
     const {setAttachmentError, clearAttachmentErrors} = useAttachmentErrors();
-    const {shouldShowArrows, setShouldShowArrows, autoHideArrows, cancelAutoHideArrows} = useCarouselArrows();
+    const {shouldShowArrows, setShouldShowArrows, autoHideArrows, cancelAutoHideArrows, resumeAutoHideArrows, pauseAutoHideArrows} = useCarouselArrows();
 
     const [page, setPage] = useState<number>(0);
     const attachments = useMemo(() => {
@@ -54,6 +54,8 @@ function AddAttachmentModalCarouselView({fileToDisplay, files}: AttachmentConten
             setShouldShowArrows={setShouldShowArrows}
             onAttachmentError={setAttachmentError}
             shouldShowArrows={shouldShowArrows}
+            resumeAutoHideArrows={resumeAutoHideArrows}
+            pauseAutoHideArrows={pauseAutoHideArrows}
         />
     );
 }
