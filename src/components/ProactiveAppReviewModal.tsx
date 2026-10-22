@@ -27,10 +27,26 @@ type ProactiveAppReviewModalProps = {
     onSkip: () => void;
 };
 
+/**
+ * The modal is always mounted globally but almost never shown. Keeping the illustration in a child that only renders
+ * while the modal content is visible stops it from requesting the illustrations chunk on every app load.
+ */
+function ProactiveAppReviewIllustration() {
+    const illustrations = useMemoizedLazyIllustrations(['ToddWithPhones']);
+
+    return (
+        <ImageSVG
+            src={illustrations.ToddWithPhones}
+            contentFit="contain"
+            width={200}
+            height={200}
+        />
+    );
+}
+
 function ProactiveAppReviewModal({isVisible, onPositive, onNegative, onSkip}: ProactiveAppReviewModalProps) {
     const {shouldUseNarrowLayout} = useResponsiveLayout();
     const styles = useThemeStyles();
-    const illustrations = useMemoizedLazyIllustrations(['ToddWithPhones']);
     const {translate} = useLocalize();
     const bottomSafeAreaPaddingStyle = useBottomSafeSafeAreaPaddingStyle({
         addBottomSafeAreaPadding: shouldUseNarrowLayout,
@@ -50,12 +66,7 @@ function ProactiveAppReviewModal({isVisible, onPositive, onNegative, onSkip}: Pr
             <View style={bottomSafeAreaPaddingStyle}>
                 {/* Todd with phones illustration */}
                 <View style={[styles.alignItemsCenter, styles.mb3]}>
-                    <ImageSVG
-                        src={illustrations.ToddWithPhones}
-                        contentFit="contain"
-                        width={200}
-                        height={200}
-                    />
+                    <ProactiveAppReviewIllustration />
                 </View>
 
                 {/* Title and prompt */}
